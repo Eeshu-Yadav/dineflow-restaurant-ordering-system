@@ -22,7 +22,7 @@ For a visual guide, check out the video below:
 ### Steps to Install
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/projectname.git
+   git clone https://github.com/Eeshu-Yadav/dineflow-restaurant-ordering-system
 
 2. Navigate to the project directory:
    ```bash
