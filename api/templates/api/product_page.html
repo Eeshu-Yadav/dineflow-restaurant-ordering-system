@@ -1,0 +1,231 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Page</title>
+    <link rel="stylesheet" href="{% static 'api/style.css' %}">
+</head>
+
+<body>
+    <div class="header">
+        <select id="user-select">
+            {% for user in users %}
+            <option value="{{ user.id }}" data-username="{{ user.username }}"
+                data-date-joined="{{ user.date_joined|date:'Y-m-d' }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+        <input type="date" class="order-btn1" id="date-joined" value="">
+    </div>
+
+    <nav>
+        <a href="{% url 'product_page' %}" class="link1">Product Page</a>
+        <a href="#" class="link2" id="order-page-link">Order Page</a>
+
+
+
+
+
+
+        <!-- <a href="/api/order/{{ order.id }}/">Order Page</a> -->
+
+
+    </nav>
+
+    <table class="product-table">
+        <tr>
+            <th>Select Item</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+            <th>Instruction</th>
+        </tr>
+        {% for item in items %}
+        <tr data-item-id="{{ item.id }}">
+            <td><input type="checkbox" class="large-checkbox"></td>
+            <td>{{ item.name }}</td>
+            <td>
+                <button class="quantity-btn decrement">-</button>
+                <span class="quantity">1</span>
+                <button class="quantity-btn increment">+</button>
+            </td>
+            <td class="unit-price">{{ item.unit_price }}</td>
+            <td class="total-price">{{ item.unit_price }}</td>
+            <td><input type="text" class="instruction-input"></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <button class="order-btn">Order Now</button>
+    <div id="order-confirmation" style="display: none; color: green;">Your order has been placed successfully!</div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // const userSelect = document.getElementById('user-select');
+            // const dateInput = document.getElementById('date-joined');
+            const orderPageLink = document.getElementById('order-page-link');
+
+            const orderButton = document.querySelector('.order-btn');
+            const userSelect = document.getElementById('user-select');
+            const dateInput = document.getElementById('date-joined');
+            const confirmationMessage = document.getElementById('order-confirmation');
+
+
+            // Handle quantity updates
+            document.querySelectorAll('.quantity-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const row = this.closest('tr');
+                    if (!row) {
+                        console.error('Row element not found for the clicked button.');
+                        return;
+                    }
+                    const quantitySpan = row.querySelector('.quantity');
+                    const unitPriceElement = row.querySelector('.unit-price');
+                    if (!unitPriceElement) {
+                        console.error('Unit price element not found for this row:', row);
+                        return;
+                    }
+
+                    // const unitPrice = parseFloat(row.querySelector('.unit-price').textContent);
+                    // let currentQuantity = parseInt(quantitySpan.textContent);
+
+                    const unitPrice = parseFloat(unitPriceElement.textContent);
+                    let currentQuantity = parseInt(quantitySpan.textContent);
+
+                    if (this.classList.contains('increment')) {
+                        currentQuantity += 1;
+                    } else if (this.classList.contains('decrement') && currentQuantity > 1) {
+                        currentQuantity -= 1;
+                    }
+
+                    quantitySpan.textContent = currentQuantity;
+                    const totalPriceElement = row.querySelector('.total-price');
+                    totalPriceElement.textContent = (unitPrice * currentQuantity).toFixed(2);
+                });
+            });
+
+
+
+            orderButton.addEventListener('click', function () {
+                console.log('Order button clicked');
+                const userId = userSelect.value;
+                const orderDate = dateInput.value;
+                if (!userId) {
+                    console.error("User ID is not selected.");
+                    alert("Please select a user before ordering.");
+                    return;
+                }
+
+                if (!orderDate) {
+                    console.error("Order date is not selected.");
+                    alert("Please select a date before ordering.");
+                    return;
+                }
+
+                const selectedItems = [];
+
+                document.querySelectorAll('.product-table tr').forEach(row => {
+                    const checkbox = row.querySelector('.large-checkbox');
+                    if (checkbox && checkbox.checked) {
+                        const itemId = row.getAttribute('data-item-id');
+                        const quantity = parseInt(row.querySelector('.quantity').textContent, 10);
+                        const instruction = row.querySelector('.instruction-input').value;
+
+                        const unitPriceElement = row.querySelector('.unit-price');
+                        if (unitPriceElement) {
+                            const unitPrice = parseFloat(unitPriceElement.textContent);
+                            const totalPrice = (unitPrice * quantity).toFixed(2);  // Calculate total price
+
+                            selectedItems.push({
+                                item_id: itemId,
+                                quantity,
+                                instruction,
+                                total_price: totalPrice
+                            });
+                        } else {
+                            console.error('Unit price element not found for item ID:', itemId);
+                        }
+                    }
+                });
+
+                if (selectedItems.length === 0) {
+                    alert("Please select at least one item to order.");
+                    return;
+                }
+
+                if (!orderDate) {
+                    alert("Please select a date before ordering.");
+                    return;
+                }
+
+                const updateOrderPageLink = () => {
+
+                    const userId = userSelect.value;
+                    // const selectedDate = dateInput.value;
+                    if (userId) {
+                        orderPageLink.href = `/api/order/${userId}/`; // Update the href to fetch orders for the selected user
+                    } else {
+                        orderPageLink.href = "#"; // Default if no user is selected
+                    }
+
+
+                    // const userId = userSelect.value;
+                    // const selectedDate = dateInput.value;
+                    // if (userId && selectedDate) {
+                    //     orderPageLink.href = `/api/order/${userId}/?selected_date=${encodeURIComponent(selectedDate)}`;
+                    // } else if (userId) {
+                    //     orderPageLink.href = `/api/order/${userId}/`; // Show orders for the user, regardless of date
+                    // } else {
+                    //     orderPageLink.href = "#"; // Default if no user is selected
+                    // }
+                };
+                userSelect.addEventListener('change', updateOrderPageLink);
+                // dateInput.addEventListener('change', updateOrderPageLink);
+                updateOrderPageLink();
+
+
+
+                fetch('{% url "create_order" %}', {
+
+                    method: 'POST',
+                    headers: {
+
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+
+                        user_id: userId,
+                        order_date: orderDate,
+                        items: selectedItems
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            // console.log("Redirecting to:", `/order/${userId}/?selected_date=${encodeURIComponent(orderDate)}`);
+                            // window.location.href = `/order/${userId}/?selected_date=${encodeURIComponent(orderDate)}`;
+                            confirmationMessage.style.display = 'block';
+                            confirmationMessage.textContent = 'Your order has been placed successfully!';
+
+
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+
+
+
+            });
+        });
+
+    </script>
+</body>
+
+</html>.

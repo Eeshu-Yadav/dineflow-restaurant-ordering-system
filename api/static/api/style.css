@@ -1,0 +1,103 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin: 30px;
+    border-radius: 70px;
+    padding: 18px 50px;
+    /* background-color: rgb(245, 248, 249); */
+}
+
+/* .link {
+    margin: 80px;
+    padding: 4px 65px;
+    color: blue;
+    text-decoration: none;
+} */
+
+.product-table, .order-table {
+    width: 80%;
+    margin: 30px auto;
+    border-collapse: collapse;
+}
+
+.product-table th, .order-table th,
+.product-table td, .order-table td {
+    /* border: 1px solid #ccc; */
+    padding: 10px;
+    text-align: center;
+}
+
+.quantity-btn {
+    border: 2px solid #000;
+    border-radius: 50%; 
+    /* background-color: #f0f0f0; */
+    cursor: pointer;
+}
+
+.instruction-input {
+    width: 60%;
+}
+
+.order-btn {
+    margin: 60px;
+    padding: 18px 40px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 70px;
+}
+
+.view-link {
+    color: blue;
+    text-decoration: underline;
+}
+
+.order-btn1 {
+    margin: 10px;
+    padding: 4px 18px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 70px;
+}
+
+#user-select {
+    margin: 10px;
+    padding: 4px 18px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 70px;
+}
+
+.link1 {
+    margin: 100px;
+    padding: 4px 65px;
+    color: blue;
+    
+}
+.link2 {
+    margin: 100px;
+    padding: 4px 65px;
+    color: black;
+    
+}
+.link3 {
+    margin: 100px;
+    padding: 4px 65px;
+    color: blue;
+    
+}
+.link4 {
+    margin: 100px;
+    padding: 4px 65px;
+    color: black;
+    
+}
+
+.large-checkbox {
+    transform: scale(1.6);
+  }

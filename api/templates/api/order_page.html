@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Page</title>
+    <link rel="stylesheet" href="{% static 'api/style.css' %}">
+
+    
+</head>
+<body>
+    <div class="header">
+        <span id="username">{{ user.username }}</span>
+        <span id="date-joined">{{ selected_date }}</span>
+    </div>
+    
+    <nav>
+        <a href="{% url 'product_page' %}" class="link4">Product Page</a>
+        <a href="#" class="link3">Order Page</a>
+    </nav>
+    
+    <table class="order-table">
+        <tr>
+            <th>Sl No.</th>
+            <th>Order ID</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+            <th>Instruction</th>
+            <th></th>
+        </tr>
+    
+        <!-- {% for order in orders %}
+            {% for item in order.order_items.all %}
+            <tr>
+                {% if forloop.first %}
+                    <td rowspan="{{ order.order_items.count }}">{{ forloop.parentloop.counter }}</td>
+                    <td rowspan="{{ order.order_items.count }}">{{ order.id }}</td>
+                {% endif %}
+                <td>{{ item.item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.item.unit_price }}</td>
+                <td>{{ item.total_price }}</td>
+                <td>{{ item.instruction }}</td>
+                <td><a href="#" class="view-link">View</a></td>
+            </tr>
+            {% endfor %}
+        {% endfor %} -->
+
+
+        {% for order in orders %}
+        <div class="order-group-container">
+            <tbody>
+                {% for item in order.order_items.all %}
+                <tr>
+                    {% if forloop.first %}
+                        <td rowspan="{{ order.order_items.count }}">{{ forloop.parentloop.counter }}</td>
+                        <td rowspan="{{ order.order_items.count }}">{{ order.id }}</td>
+                    {% endif %}
+                    <td>{{ item.item.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.item.unit_price }}</td>
+                    <td>{{ item.total_price }}</td>
+                    <td>{{ item.instruction }}</td>
+                    <td><a href="#" class="view-link">View</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </div>
+        {% endfor %}
+
+
+
+        
+    </table>
+
+
+    <script>
+        function getQueryParams() {
+            var params = {};
+            var queryString = window.location.search.substring(1);
+            var regex = /([^&=]+)=([^&]*)/g;
+            var match;
+            while ((match = regex.exec(queryString)) !== null) {
+                params[decodeURIComponent(match[1])] = decodeURIComponent(match[2]);
+            }
+            return params;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var params = getQueryParams();
+            document.getElementById('username').textContent = params.username || "Default Username";
+            document.getElementById('date-joined').textContent = params.selected_date || "Default Date";
+        });
+    </script>
+</body>
+</html>
